@@ -11,14 +11,16 @@ import logging
 from vgg19 import VGG19
 from loss import StyleTransferLoss
 
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
+
 def main(output, content, style, iters, alpha, beta, lr, saved_dir):
     # Loading the model
-    model = VGG19()
+    model = VGG19().to(device)
     # Extracting the feature representation of the content image and the style image
     content_representation, style_representation = get_representations(model, content, style)
 
     output_img = read_img(output)
-    output_img_tensor = transform_img(output_img)
+    output_img_tensor = transform_img(output_img).to(device)
     # Loading the style loss module
     criterion = StyleTransferLoss(alpha=alpha, beta=beta)
     optim = torch.optim.LBFGS([output_img_tensor], lr=lr)
@@ -51,12 +53,12 @@ def get_representations(model, content, style):
     '''
     # Loading the content image and preforming preprocessing
     content_img = read_img(content)
-    content_img_tensor = transform_img(content_img)
+    content_img_tensor = transform_img(content_img).to(device)
     content_representation = model(content_img_tensor)
     
     # Loading the style image and preforming preprocessing
     style_img = read_img(style)
-    style_img_tensor = transform_img(style_img)
+    style_img_tensor = transform_img(style_img).to(device)
     style_representation = model(style_img_tensor)
 
     return content_representation, style_representation
