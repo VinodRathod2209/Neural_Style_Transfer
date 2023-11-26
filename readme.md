@@ -5,6 +5,11 @@ This is an implementation of the paper "Image Style Transfer Using Convolutional
 
 While generating the output image, the neural style transfer algorithm tries to minimize both the style loss and the content loss. However, the style loss and the content loss contradicts to each other in most cases(if the output image is "closer" to the content image, then it should be "farther" from the style image, and vice versa). Therefore, the final output image is at a balance point that possess both the content information from the content image and the texture from the style image.
 
+## Limitations
+Synthesized images often have low-level noise, which is less noticeable in artistic style transfer but affects photorealism when both content and style images are photographs. This noise, resembling network filters, could potentially be removed with efficient post-optimization de-noising techniques.
+The resolution of synthesized images is a significant constraint, as both the optimization problem’s dimensionality and the Convolutional Neural Network’s unit count increase linearly with pixel count. This affects the synthesis speed, which is heavily dependent on image resolution.
+
+
 ## References
 [1] L. A. Gatys, A. S. Ecker and M. Bethge, Image Style Transfer Using Convolutional Neural Networks, 2016 IEEE Conference on Computer Vision and Pattern Recognition (CVPR), Las Vegas, NV, USA, 2016, pp. 2414-2423, doi: 10.1109/CVPR.2016.265.
 
