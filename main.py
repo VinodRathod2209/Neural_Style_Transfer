@@ -26,13 +26,13 @@ def main(output, content, style, iters, alpha, beta, lr, saved_dir):
     optim = torch.optim.LBFGS([output_img_tensor], lr=lr)
 
     output_img_tensor.requires_grad_(True)
-
+    # Training the model 
     for i in range(iters):
-
+        
         def closure():
             output_representation = model(output_img_tensor)
             optim.zero_grad()
-
+            # Calculating the loss using the style transfer loss
             loss = criterion(output_representation, content_representation, style_representation)
             loss.backward()
             logging.info(f'loss: {loss.item()}')
