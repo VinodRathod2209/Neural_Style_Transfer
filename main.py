@@ -23,6 +23,8 @@ def main(output, content, style, iters, alpha, beta, lr, saved_dir):
     output_img_tensor = transform_img(output_img).to(device)
     # Loading the style loss module
     criterion = StyleTransferLoss(alpha=alpha, beta=beta)
+    
+    # optimize the pixel values of the generated image and backpropagate the loss 
     optim = torch.optim.LBFGS([output_img_tensor], lr=lr)
 
     output_img_tensor.requires_grad_(True)
@@ -88,10 +90,10 @@ if __name__ == '__main__':
     parser.add_argument('--output', type=str, default='images/content_images/cat.jpg')
     parser.add_argument('--content', type=str, default='images/content_images/cat.jpg')
     parser.add_argument('--style', type=str, default='images/style_images/sunrise.jpg')
-    parser.add_argument('--iters', type=int, default=50)
+    parser.add_argument('--iters', type=int, default=50) # optimal 50 to 100
     parser.add_argument('--alpha', type=float, default=1)
-    parser.add_argument('--beta', type=float, default=1e4)
-    parser.add_argument('--lr', type=float, default=1e-2)
+    parser.add_argument('--beta', type=float, default=1e4) 
+    parser.add_argument('--lr', type=float, default=1e-2) # Default Learning rate
     parser.add_argument('--saved_dir', type=str, default='images/result')
     parser.add_argument('--quite', '-q', action='store_true')
 
