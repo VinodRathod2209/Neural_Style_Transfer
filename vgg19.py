@@ -3,12 +3,13 @@ from torch import nn
 from torchvision.models.feature_extraction import create_feature_extractor 
 import torch
 
-device = 'cuda' if torch.cuda.is_available() else 'cpu'
+# VGG19 Model Defination 
 
 class VGG19(nn.Module):
     def __init__(self):
         super().__init__()
-
+        
+        # Loading the pre-trained VGG19 model from the torchvision models
         self.vgg19 = vgg19(weights='IMAGENET1K_V1').features
 
         self.max_pool_layers = [4, 9, 18, 27]
@@ -22,6 +23,7 @@ class VGG19(nn.Module):
             if idx in self.max_pool_layers:
                 self.vgg19[idx] = nn.AvgPool2d(kernel_size=2, stride=2, padding=0)
 
+        #Extracting the intermediate features from the model
         self.model = create_feature_extractor(self.vgg19, {
             '1': 'conv1_1',
             '6': 'conv2_1',
