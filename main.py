@@ -12,13 +12,14 @@ from vgg19 import VGG19
 from loss import StyleTransferLoss
 
 def main(output, content, style, iters, alpha, beta, lr, saved_dir):
+    # Loading the model
     model = VGG19()
-
+    # Extracting the feature representation of the content image and the style image
     content_representation, style_representation = get_representations(model, content, style)
 
     output_img = read_img(output)
     output_img_tensor = transform_img(output_img)
-
+    # Loading the style loss module
     criterion = StyleTransferLoss(alpha=alpha, beta=beta)
     optim = torch.optim.LBFGS([output_img_tensor], lr=lr)
 
@@ -31,26 +32,29 @@ def main(output, content, style, iters, alpha, beta, lr, saved_dir):
             optim.zero_grad()
 
             loss = criterion(output_representation, content_representation, style_representation)
-            # loss += torch.nn.MSELoss()(output_img_tensor, torch.zeros((3, 224, 224))) 
             loss.backward()
             logging.info(f'loss: {loss.item()}')
             return loss
 
         optim.step(closure)
-
-        img_path = os.path.dirname(__file__)
-        img_path = os.path.join(img_path, saved_dir, f'{i}.jpg')
-        logging.info(f'{img_path} saved')
-        save_image(output_img_tensor, img_path)
+        if i == iters-1:
+            # Saving the final styled image
+            img_path = os.path.dirname(__file__)
+            img_path = os.path.join(img_path, saved_dir, f'{i}.jpg')
+            logging.info(f'{img_path} saved')
+            save_image(output_img_tensor, img_path)
 
 
 def get_representations(model, content, style):
-    '''precompute the data of Gram matrix in style representation and the content representation 
     '''
+        precompute the data of Gram matrix in style representation and the content representation 
+    '''
+    # Loading the content image and preforming preprocessing
     content_img = read_img(content)
     content_img_tensor = transform_img(content_img)
     content_representation = model(content_img_tensor)
-
+    
+    # Loading the style image and preforming preprocessing
     style_img = read_img(style)
     style_img_tensor = transform_img(style_img)
     style_representation = model(style_img_tensor)
@@ -59,6 +63,7 @@ def get_representations(model, content, style):
     
 
 def read_img(img_path):
+    # Loading the image from the file path
     dir_path = os.path.dirname(__file__) 
     img_path = os.path.join(dir_path, img_path)
     
@@ -66,6 +71,8 @@ def read_img(img_path):
 
 
 def transform_img(img):
+    # This function will perform the required preprocessing.
+    # The preprocessing steps involves resizing the image and then converting it to a tensor
     transformer = transforms.Compose([
         transforms.Resize((224, 224)),
         transforms.ToTensor(),
@@ -79,7 +86,7 @@ if __name__ == '__main__':
     parser.add_argument('--output', type=str, default='images/content_images/cat.jpg')
     parser.add_argument('--content', type=str, default='images/content_images/cat.jpg')
     parser.add_argument('--style', type=str, default='images/style_images/sunrise.jpg')
-    parser.add_argument('--iters', type=int, default=100)
+    parser.add_argument('--iters', type=int, default=50)
     parser.add_argument('--alpha', type=float, default=1)
     parser.add_argument('--beta', type=float, default=1e4)
     parser.add_argument('--lr', type=float, default=1e-2)
