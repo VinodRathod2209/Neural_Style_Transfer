@@ -5,6 +5,9 @@ This is an implementation of the paper "Image Style Transfer Using Convolutional
 
 While generating the output image, the neural style transfer algorithm tries to minimize both the style loss and the content loss. However, the style loss and the content loss contradicts to each other in most cases(if the output image is "closer" to the content image, then it should be "farther" from the style image, and vice versa). Therefore, the final output image is at a balance point that possess both the content information from the content image and the texture from the style image.
 
+## Setup
+To perform style transfer, you need to save the image that you want to modify in the content folder inside the image folder, and the image that you want to use as a reference in the style folder inside the image folder. Then, you need to edit the main.py file and specify the names of the content image and the style image that you have chosen.
+
 ## Limitations
 Synthesized images often have low-level noise, which is less noticeable in artistic style transfer but affects photorealism when both content and style images are photographs. This noise, resembling network filters, could potentially be removed with efficient post-optimization de-noising techniques.
 The resolution of synthesized images is a significant constraint, as both the optimization problem’s dimensionality and the Convolutional Neural Network’s unit count increase linearly with pixel count. This affects the synthesis speed, which is heavily dependent on image resolution.
