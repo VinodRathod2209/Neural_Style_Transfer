@@ -12,7 +12,7 @@ class VGG19(nn.Module):
         # Loading the pre-trained VGG19 model from the torchvision models
         self.vgg19 = vgg19(weights='IMAGENET1K_V1').features
         
-        #Since we need only the 5 layers in the model so we will be dropping all the rest layers from the features of the model
+        #Since we need only the 4 layers in the model so we will be dropping all the rest layers from the features of the model
         self.max_pool_layers = [4, 9, 18, 27]
 
         for param in self.vgg19.parameters():
